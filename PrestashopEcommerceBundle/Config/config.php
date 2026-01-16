@@ -9,23 +9,24 @@ return [
     'services' => [
         'integrations' => [
             'mautic.integration.prestashopecommerce' => [
-                'class'     => \MauticPlugin\PrestashopEcommerceBundle\Integration\PrestashopEcommerceIntegration::class,
+                'class' => \MauticPlugin\PrestashopEcommerceBundle\Integration\PrestashopEcommerceIntegration::class,
+                'tags'  => [
+                    'mautic.integration',
+                    'mautic.basic_integration',
+                    'mautic.config_integration',
+                ],
+            ],
+        ],
+        'forms' => [
+            'mautic.form.type.prestashopecommerce_config' => [
+                'class' => \MauticPlugin\PrestashopEcommerceBundle\Form\Type\ConfigType::class,
+            ],
+        ],
+        'helpers' => [
+            'mautic.prestashopecommerce.config' => [
+                'class'     => \MauticPlugin\PrestashopEcommerceBundle\Integration\Support\ConfigSupport::class,
                 'arguments' => [
-                    'event_dispatcher',
-                    'mautic.helper.cache_storage',
-                    'doctrine.orm.entity_manager',
-                    'request_stack',
-                    'router',
-                    'translator',
-                    'monolog.logger.mautic',
-                    'mautic.helper.encryption',
-                    'mautic.lead.model.lead',
-                    'mautic.lead.model.company',
-                    'mautic.helper.paths',
-                    'mautic.core.model.notification',
-                    'mautic.lead.model.field',
-                    'mautic.integrations.helper.builder_integrations',
-                    'mautic.lead.model.dnc',
+                    'mautic.integrations.helper',
                 ],
             ],
         ],
@@ -34,8 +35,7 @@ return [
                 'class'     => \MauticPlugin\PrestashopEcommerceBundle\Command\PrestashopEcommerceImportProductsCommand::class,
                 'arguments' => [
                     'mautic.product.model.product',
-                    'mautic.integration.prestashopecommerce',
-                    'mautic.helper.integration',
+                    'mautic.prestashopecommerce.config',
                 ],
                 'tag' => 'console.command',
             ],
@@ -45,8 +45,7 @@ return [
                     'mautic.cart.model.cart',
                     'mautic.product.model.product',
                     'mautic.lead.model.lead',
-                    'mautic.integration.prestashopecommerce',
-                    'mautic.helper.integration',
+                    'mautic.prestashopecommerce.config',
                 ],
                 'tag' => 'console.command',
             ],
@@ -57,8 +56,7 @@ return [
                     'mautic.order.model.order',
                     'mautic.product.model.product',
                     'mautic.lead.model.lead',
-                    'mautic.integration.prestashopecommerce',
-                    'mautic.helper.integration',
+                    'mautic.prestashopecommerce.config',
                 ],
                 'tag' => 'console.command',
             ],
@@ -66,8 +64,7 @@ return [
                 'class'     => \MauticPlugin\PrestashopEcommerceBundle\Command\PrestashopEcommerceImportCustomersCommand::class,
                 'arguments' => [
                     'mautic.lead.model.lead',
-                    'mautic.integration.prestashopecommerce',
-                    'mautic.helper.integration',
+                    'mautic.prestashopecommerce.config',
                 ],
                 'tag' => 'console.command',
             ],
@@ -76,8 +73,7 @@ return [
                 'arguments' => [
                     'mautic.productcategory.model.productcategory',
                     'mautic.product.model.product',
-                    'mautic.integration.prestashopecommerce',
-                    'mautic.helper.integration',
+                    'mautic.prestashopecommerce.config',
                 ],
                 'tag' => 'console.command',
             ],

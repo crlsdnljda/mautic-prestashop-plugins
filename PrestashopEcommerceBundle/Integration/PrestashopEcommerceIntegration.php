@@ -1,52 +1,37 @@
 <?php
 
-/*
- * @copyright   2014 Mautic Contributors. All rights reserved
- * @author      Mautic
- *
- * @link        http://mautic.org
- *
- * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
- */
-
 namespace MauticPlugin\PrestashopEcommerceBundle\Integration;
 
-use Mautic\CoreBundle\Helper\UrlHelper;
-use Mautic\PluginBundle\Integration\AbstractIntegration;
+use Mautic\IntegrationsBundle\Integration\BasicIntegration;
+use Mautic\IntegrationsBundle\Integration\ConfigurationTrait;
+use Mautic\IntegrationsBundle\Integration\Interfaces\BasicInterface;
+use Mautic\IntegrationsBundle\Integration\Interfaces\ConfigFormInterface;
+use MauticPlugin\PrestashopEcommerceBundle\Form\Type\ConfigType;
 
-class PrestashopEcommerceIntegration extends AbstractIntegration
+class PrestashopEcommerceIntegration extends BasicIntegration implements BasicInterface, ConfigFormInterface
 {
-    public function getName()
+    use ConfigurationTrait;
+
+    public const NAME = 'PrestashopEcommerce';
+    public const DISPLAY_NAME = 'PrestaShop Ecommerce';
+
+    public function getName(): string
     {
-        return 'PrestashopEcommerce';
+        return self::NAME;
     }
 
-    /**
-     * Return's authentication method such as oauth2, oauth1a, key, etc.
-     *
-     * @return string
-     */
-    public function getAuthenticationType()
+    public function getDisplayName(): string
     {
-        // Just use none for now and I'll build in "basic" later
-        return 'none';
+        return self::DISPLAY_NAME;
     }
 
-    /**
-     * Return array of key => label elements that will be converted to inputs to
-     * obtain from the user.
-     *
-     * @return array
-     */
-    public function getRequiredKeyFields()
+    public function getIcon(): string
     {
-        return [
-            'apiKey' => 'mautic.integration.prestashop.api',
-            'apiUrl' => 'mautic.integration.prestashop.apiUrl',
-        ];
+        return 'plugins/PrestashopEcommerceBundle/Assets/img/prestashop.png';
     }
 
-    public function getApiUrl(){
-        return $this->keys['apiUrl'];
+    public function getConfigFormName(): ?string
+    {
+        return ConfigType::class;
     }
 }

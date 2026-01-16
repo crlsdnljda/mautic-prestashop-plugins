@@ -2,10 +2,9 @@
 
 namespace MauticPlugin\PrestashopEcommerceBundle\Command;
 
-use Mautic\PluginBundle\Helper\IntegrationHelper;
 use MauticPlugin\EcommerceBundle\Model\ProductCategoryModel;
 use MauticPlugin\EcommerceBundle\Model\ProductModel;
-use MauticPlugin\PrestashopEcommerceBundle\Integration\PrestashopEcommerceIntegration;
+use MauticPlugin\PrestashopEcommerceBundle\Integration\Support\ConfigSupport;
 use MauticPlugin\PrestashopEcommerceBundle\Services\PrestaShopWebserviceException;
 use MauticPlugin\PrestashopEcommerceBundle\Services\PrestaShopWebservice;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -21,20 +20,17 @@ class PrestashopEcommerceImportProductCategoriesCommand extends Command
 {
     private ProductCategoryModel $productCategoryModel;
     private ProductModel $productModel;
-    private PrestashopEcommerceIntegration $prestashopEcommerceIntegration;
-    private IntegrationHelper $integrationHelper;
+    private ConfigSupport $configSupport;
 
     public function __construct(
         ProductCategoryModel $productCategoryModel,
         ProductModel $productModel,
-        PrestashopEcommerceIntegration $prestashopEcommerceIntegration,
-        IntegrationHelper $integrationHelper
+        ConfigSupport $configSupport
     ) {
         parent::__construct();
         $this->productCategoryModel = $productCategoryModel;
         $this->productModel = $productModel;
-        $this->prestashopEcommerceIntegration = $prestashopEcommerceIntegration;
-        $this->integrationHelper = $integrationHelper;
+        $this->configSupport = $configSupport;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -43,22 +39,21 @@ class PrestashopEcommerceImportProductCategoriesCommand extends Command
         $output->writeln('Importing Product Categories');
 
         try {
-            $integrationObject = $this->integrationHelper->getIntegrationObject('PrestashopEcommerce');
-            if (!$integrationObject || !$integrationObject->getIntegrationSettings()->getIsPublished()) {
+            if (!$this->configSupport->isPublished()) {
                 $output->writeln('<error>PrestashopEcommerce integration is not enabled</error>');
                 return Command::FAILURE;
             }
 
-            $api = $this->prestashopEcommerceIntegration->decryptApiKeys(
-                $integrationObject->getIntegrationSettings()->getApiKeys()
-            );
-
-            if (empty($api['apiUrl']) || empty($api['apiKey'])) {
+            if (!$this->configSupport->isConfigured()) {
                 $output->writeln('<error>API URL or API Key not configured</error>');
                 return Command::FAILURE;
             }
 
-            $webService = new PrestaShopWebservice($api['apiUrl'], $api['apiKey'], false);
+            $webService = new PrestaShopWebservice(
+                $this->configSupport->getApiUrl(),
+                $this->configSupport->getApiKey(),
+                false
+            );
 
             $xml = $webService->get([
                 'resource' => 'shops',
@@ -80,7 +75,7 @@ class PrestashopEcommerceImportProductCategoriesCommand extends Command
                 $shop_url = 'http://' . $shop_url->domain . $shop_url->physical_uri . $shop_url->virtual_uri;
 
                 $output->writeln('Processing shop: ' . $shop->name);
-                $webServiceShop = new PrestaShopWebservice($shop_url, $api['apiKey'], false);
+                $webServiceShop = new PrestaShopWebservice($shop_url, $this->configSupport->getApiKey(), false);
 
                 $xml = $webServiceShop->get([
                     'resource' => 'languages',
