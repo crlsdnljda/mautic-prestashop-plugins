@@ -2,16 +2,29 @@
 
 namespace MauticPlugin\EcommerceBundle\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use MauticPlugin\EcommerceBundle\Entity\Product;
 
-class ProductRepository extends EntityRepository
+class ProductRepository
 {
+    private EntityManagerInterface $em;
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
+    public function find(int $id): ?Product
+    {
+        return $this->em->getRepository(Product::class)->find($id);
+    }
+
     public function getProductById(int $productId, int $shopId, int $productAttributeId, string $language): array
     {
-        $qb = $this->createQueryBuilder('p');
+        $qb = $this->em->createQueryBuilder();
 
         $qb->select('p.id')
+            ->from(Product::class, 'p')
             ->where('p.productId = :productId')
             ->andWhere('p.shopId = :shopId')
             ->andWhere('p.productAttributeId = :productAttributeId')
@@ -22,21 +35,5 @@ class ProductRepository extends EntityRepository
             ->setParameter('language', $language);
 
         return $qb->getQuery()->getArrayResult();
-    }
-
-    public function getProducts(array $args = []): array
-    {
-        $qb = $this->createQueryBuilder('p');
-
-        if (!empty($args['filter'])) {
-            $qb->andWhere('p.name LIKE :filter')
-                ->setParameter('filter', '%' . $args['filter'] . '%');
-        }
-
-        if (!empty($args['orderBy'])) {
-            $qb->orderBy('p.' . $args['orderBy'], $args['orderByDir'] ?? 'ASC');
-        }
-
-        return $qb->getQuery()->getResult();
     }
 }

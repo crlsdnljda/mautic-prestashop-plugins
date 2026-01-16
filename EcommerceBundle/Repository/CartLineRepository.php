@@ -2,18 +2,20 @@
 
 namespace MauticPlugin\EcommerceBundle\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use MauticPlugin\EcommerceBundle\Entity\CartLine;
 
-class CartLineRepository extends EntityRepository
+class CartLineRepository
 {
-    public function deleteByCartId(int $cartId): void
-    {
-        $qb = $this->createQueryBuilder('cl');
+    private EntityManagerInterface $em;
 
-        $qb->delete()
-            ->where('cl.cart = :cartId')
-            ->setParameter('cartId', $cartId)
-            ->getQuery()
-            ->execute();
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
+    public function find(int $id): ?CartLine
+    {
+        return $this->em->getRepository(CartLine::class)->find($id);
     }
 }

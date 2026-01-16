@@ -2,16 +2,29 @@
 
 namespace MauticPlugin\EcommerceBundle\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use MauticPlugin\EcommerceBundle\Entity\Cart;
 
-class CartRepository extends EntityRepository
+class CartRepository
 {
+    private EntityManagerInterface $em;
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
+    public function find(int $id): ?Cart
+    {
+        return $this->em->getRepository(Cart::class)->find($id);
+    }
+
     public function getCartById(int $cartId, int $shopId): ?array
     {
-        $qb = $this->createQueryBuilder('c');
+        $qb = $this->em->createQueryBuilder();
 
         $qb->select('c.id, c.dateUpdPrestashop')
+            ->from(Cart::class, 'c')
             ->where('c.cartId = :cartId')
             ->andWhere('c.shopId = :shopId')
             ->setParameter('cartId', $cartId)
@@ -19,16 +32,5 @@ class CartRepository extends EntityRepository
 
         $result = $qb->getQuery()->getArrayResult();
         return !empty($result) ? $result[0] : null;
-    }
-
-    public function getCartsByCustomerId(int $customerId): array
-    {
-        $qb = $this->createQueryBuilder('c');
-
-        $qb->where('c.customerId = :customerId')
-            ->setParameter('customerId', $customerId)
-            ->orderBy('c.cartDate', 'DESC');
-
-        return $qb->getQuery()->getResult();
     }
 }

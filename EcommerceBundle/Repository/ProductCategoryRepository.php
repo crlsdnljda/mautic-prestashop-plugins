@@ -2,16 +2,29 @@
 
 namespace MauticPlugin\EcommerceBundle\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use MauticPlugin\EcommerceBundle\Entity\ProductCategory;
 
-class ProductCategoryRepository extends EntityRepository
+class ProductCategoryRepository
 {
+    private EntityManagerInterface $em;
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
+    public function find(int $id): ?ProductCategory
+    {
+        return $this->em->getRepository(ProductCategory::class)->find($id);
+    }
+
     public function getCategoryById(int $categoryId, int $shopId, string $language): ?array
     {
-        $qb = $this->createQueryBuilder('pc');
+        $qb = $this->em->createQueryBuilder();
 
         $qb->select('pc.id')
+            ->from(ProductCategory::class, 'pc')
             ->where('pc.categoryId = :categoryId')
             ->andWhere('pc.shopId = :shopId')
             ->andWhere('pc.language = :language')
@@ -21,18 +34,5 @@ class ProductCategoryRepository extends EntityRepository
 
         $result = $qb->getQuery()->getArrayResult();
         return !empty($result) ? $result[0] : null;
-    }
-
-    public function getCategoriesByShop(int $shopId, string $language): array
-    {
-        $qb = $this->createQueryBuilder('pc');
-
-        $qb->where('pc.shopId = :shopId')
-            ->andWhere('pc.language = :language')
-            ->setParameter('shopId', $shopId)
-            ->setParameter('language', $language)
-            ->orderBy('pc.levelDepth', 'ASC');
-
-        return $qb->getQuery()->getResult();
     }
 }

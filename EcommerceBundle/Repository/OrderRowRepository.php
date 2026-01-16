@@ -2,18 +2,20 @@
 
 namespace MauticPlugin\EcommerceBundle\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use MauticPlugin\EcommerceBundle\Entity\OrderRow;
 
-class OrderRowRepository extends EntityRepository
+class OrderRowRepository
 {
-    public function deleteByOrderId(int $orderId): void
-    {
-        $qb = $this->createQueryBuilder('or');
+    private EntityManagerInterface $em;
 
-        $qb->delete()
-            ->where('or.order = :orderId')
-            ->setParameter('orderId', $orderId)
-            ->getQuery()
-            ->execute();
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
+    public function find(int $id): ?OrderRow
+    {
+        return $this->em->getRepository(OrderRow::class)->find($id);
     }
 }
