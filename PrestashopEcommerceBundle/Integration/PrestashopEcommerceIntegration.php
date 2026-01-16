@@ -34,4 +34,9 @@ class PrestashopEcommerceIntegration extends BasicIntegration implements BasicIn
     {
         return ConfigType::class;
     }
+
+    public function getConfigFormContentTemplate(): ?string
+    {
+        return '@PrestashopEcommerce/Integration/form.html.twig';
+    }
 }
