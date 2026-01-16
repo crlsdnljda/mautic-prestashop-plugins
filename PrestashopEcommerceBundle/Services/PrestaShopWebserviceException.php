@@ -2,8 +2,9 @@
 
 namespace MauticPlugin\PrestashopEcommerceBundle\Services;
 
-use PHPUnit\Framework\Exception;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
-class PrestaShopWebserviceException extends Exception
+#[Autoconfigure(false)]
+class PrestaShopWebserviceException extends \Exception
 {
 }
