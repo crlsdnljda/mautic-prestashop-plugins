@@ -2,16 +2,15 @@
 
 namespace MauticPlugin\PrestashopEcommerceBundle\Integration\Support;
 
-use Mautic\IntegrationsBundle\Helper\IntegrationsHelper;
-use MauticPlugin\PrestashopEcommerceBundle\Integration\PrestashopEcommerceIntegration;
+use Mautic\PluginBundle\Helper\IntegrationHelper;
 
 class ConfigSupport
 {
-    private IntegrationsHelper $integrationsHelper;
+    private IntegrationHelper $integrationHelper;
 
-    public function __construct(IntegrationsHelper $integrationsHelper)
+    public function __construct(IntegrationHelper $integrationHelper)
     {
-        $this->integrationsHelper = $integrationsHelper;
+        $this->integrationHelper = $integrationHelper;
     }
 
     public function getApiUrl(): ?string
@@ -26,12 +25,12 @@ class ConfigSupport
 
     public function getShopId(): int
     {
-        return (int) ($this->getConfigValue('shopId') ?? 1);
+        return 1;
     }
 
     public function getLanguage(): string
     {
-        return $this->getConfigValue('language') ?? 'es';
+        return 'es';
     }
 
     public function isConfigured(): bool
@@ -42,9 +41,11 @@ class ConfigSupport
     public function isPublished(): bool
     {
         try {
-            $integration = $this->integrationsHelper->getIntegration(PrestashopEcommerceIntegration::NAME);
-            $config = $integration->getIntegrationConfiguration();
-            return $config->getIsPublished();
+            $integration = $this->integrationHelper->getIntegrationObject('PrestashopEcommerce');
+            if (!$integration) {
+                return false;
+            }
+            return $integration->getIntegrationSettings()->getIsPublished();
         } catch (\Exception $e) {
             return false;
         }
@@ -53,10 +54,12 @@ class ConfigSupport
     private function getConfigValue(string $key): ?string
     {
         try {
-            $integration = $this->integrationsHelper->getIntegration(PrestashopEcommerceIntegration::NAME);
-            $config = $integration->getIntegrationConfiguration();
-            $apiKeys = $config->getApiKeys();
-            return $apiKeys[$key] ?? null;
+            $integration = $this->integrationHelper->getIntegrationObject('PrestashopEcommerce');
+            if (!$integration) {
+                return null;
+            }
+            $keys = $integration->getDecryptedApiKeys();
+            return $keys[$key] ?? null;
         } catch (\Exception $e) {
             return null;
         }

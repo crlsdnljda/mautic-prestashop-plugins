@@ -2,41 +2,40 @@
 
 namespace MauticPlugin\PrestashopEcommerceBundle\Integration;
 
-use Mautic\IntegrationsBundle\Integration\BasicIntegration;
-use Mautic\IntegrationsBundle\Integration\ConfigurationTrait;
-use Mautic\IntegrationsBundle\Integration\Interfaces\BasicInterface;
-use Mautic\IntegrationsBundle\Integration\Interfaces\ConfigFormInterface;
-use MauticPlugin\PrestashopEcommerceBundle\Form\Type\ConfigType;
+use Mautic\PluginBundle\Integration\AbstractIntegration;
 
-class PrestashopEcommerceIntegration extends BasicIntegration implements BasicInterface, ConfigFormInterface
+class PrestashopEcommerceIntegration extends AbstractIntegration
 {
-    use ConfigurationTrait;
-
-    public const NAME = 'PrestashopEcommerce';
-    public const DISPLAY_NAME = 'PrestaShop Ecommerce';
-
     public function getName(): string
     {
-        return self::NAME;
+        return 'PrestashopEcommerce';
     }
 
     public function getDisplayName(): string
     {
-        return self::DISPLAY_NAME;
+        return 'PrestaShop Ecommerce';
+    }
+
+    public function getAuthenticationType(): string
+    {
+        return 'keys';
+    }
+
+    public function getRequiredKeyFields(): array
+    {
+        return [
+            'apiUrl' => 'mautic.plugin.prestashop.api_url',
+            'apiKey' => 'mautic.plugin.prestashop.api_key',
+        ];
+    }
+
+    public function getSecretKeys(): array
+    {
+        return ['apiKey'];
     }
 
     public function getIcon(): string
     {
         return 'plugins/PrestashopEcommerceBundle/Assets/img/prestashop.png';
-    }
-
-    public function getConfigFormName(): ?string
-    {
-        return ConfigType::class;
-    }
-
-    public function getConfigFormContentTemplate(): ?string
-    {
-        return '@PrestashopEcommerce/Integration/form.html.twig';
     }
 }
