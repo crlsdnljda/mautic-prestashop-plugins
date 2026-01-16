@@ -6,7 +6,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use MauticPlugin\EcommerceBundle\Entity\Cart;
 use MauticPlugin\EcommerceBundle\Entity\CartLine;
 use MauticPlugin\EcommerceBundle\Repository\CartRepository;
+use Symfony\Component\DependencyInjection\Attribute\Exclude;
 
+#[Exclude]
 class CartModel
 {
     private EntityManagerInterface $em;

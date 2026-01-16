@@ -2,8 +2,8 @@
 
 namespace MauticPlugin\EcommerceBundle;
 
-use Mautic\IntegrationsBundle\Bundle\AbstractPluginBundle;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class EcommerceBundle extends AbstractPluginBundle
+class EcommerceBundle extends Bundle
 {
 }

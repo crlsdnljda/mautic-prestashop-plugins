@@ -2,8 +2,8 @@
 
 namespace MauticPlugin\PrestashopEcommerceBundle;
 
-use Mautic\IntegrationsBundle\Bundle\AbstractPluginBundle;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class PrestashopEcommerceBundle extends AbstractPluginBundle
+class PrestashopEcommerceBundle extends Bundle
 {
 }

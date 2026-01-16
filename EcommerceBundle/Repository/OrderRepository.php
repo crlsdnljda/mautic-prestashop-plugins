@@ -2,29 +2,25 @@
 
 namespace MauticPlugin\EcommerceBundle\Repository;
 
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use MauticPlugin\EcommerceBundle\Entity\Order;
 
-class OrderRepository
+/**
+ * @extends ServiceEntityRepository<Order>
+ */
+class OrderRepository extends ServiceEntityRepository
 {
-    private EntityManagerInterface $em;
-
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(ManagerRegistry $registry)
     {
-        $this->em = $em;
-    }
-
-    public function find(int $id): ?Order
-    {
-        return $this->em->getRepository(Order::class)->find($id);
+        parent::__construct($registry, Order::class);
     }
 
     public function getOrderById(int $orderId, int $shopId): ?array
     {
-        $qb = $this->em->createQueryBuilder();
+        $qb = $this->createQueryBuilder('o');
 
         $qb->select('o.id, o.dateUpdPrestashop')
-            ->from(Order::class, 'o')
             ->where('o.orderId = :orderId')
             ->andWhere('o.shopId = :shopId')
             ->setParameter('orderId', $orderId)

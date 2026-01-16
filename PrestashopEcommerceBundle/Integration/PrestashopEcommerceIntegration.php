@@ -3,7 +3,9 @@
 namespace MauticPlugin\PrestashopEcommerceBundle\Integration;
 
 use Mautic\PluginBundle\Integration\AbstractIntegration;
+use Symfony\Component\DependencyInjection\Attribute\Exclude;
 
+#[Exclude]
 class PrestashopEcommerceIntegration extends AbstractIntegration
 {
     public function getName(): string

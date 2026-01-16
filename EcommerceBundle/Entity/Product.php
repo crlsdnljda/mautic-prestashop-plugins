@@ -6,55 +6,22 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 
-#[ORM\Entity(repositoryClass: \MauticPlugin\EcommerceBundle\Repository\ProductRepository::class)]
-#[ORM\Table(name: 'ecommerce_products')]
 class Product
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
-
-    #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $name = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $shortDescription = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $longDescription = null;
-
-    #[ORM\Column(type: Types::INTEGER)]
     private ?int $productId = null;
-
-    #[ORM\Column(type: Types::INTEGER)]
     private ?int $shopId = null;
-
-    #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $productAttributeId = null;
-
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $price = null;
-
-    #[ORM\Column(type: Types::STRING, length: 10)]
     private ?string $language = null;
-
-    #[ORM\Column(type: Types::STRING, length: 100, nullable: true)]
     private ?string $reference = null;
-
-    #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
     private ?string $taxPercent = null;
-
-    #[ORM\Column(type: Types::STRING, length: 500, nullable: true)]
     private ?string $url = null;
-
-    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $imageUrl = null;
-
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateAdded = null;
-
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateModified = null;
 
     public function __construct()

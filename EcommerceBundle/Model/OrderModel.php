@@ -6,7 +6,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use MauticPlugin\EcommerceBundle\Entity\Order;
 use MauticPlugin\EcommerceBundle\Entity\OrderRow;
 use MauticPlugin\EcommerceBundle\Repository\OrderRepository;
+use Symfony\Component\DependencyInjection\Attribute\Exclude;
 
+#[Exclude]
 class OrderModel
 {
     private EntityManagerInterface $em;

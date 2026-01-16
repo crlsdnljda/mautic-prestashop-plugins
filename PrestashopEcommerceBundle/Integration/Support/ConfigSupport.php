@@ -3,7 +3,9 @@
 namespace MauticPlugin\PrestashopEcommerceBundle\Integration\Support;
 
 use Mautic\PluginBundle\Helper\IntegrationHelper;
+use Symfony\Component\DependencyInjection\Attribute\Exclude;
 
+#[Exclude]
 class ConfigSupport
 {
     private IntegrationHelper $integrationHelper;

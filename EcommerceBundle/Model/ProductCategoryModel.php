@@ -5,7 +5,9 @@ namespace MauticPlugin\EcommerceBundle\Model;
 use Doctrine\ORM\EntityManagerInterface;
 use MauticPlugin\EcommerceBundle\Entity\ProductCategory;
 use MauticPlugin\EcommerceBundle\Repository\ProductCategoryRepository;
+use Symfony\Component\DependencyInjection\Attribute\Exclude;
 
+#[Exclude]
 class ProductCategoryModel
 {
     private EntityManagerInterface $em;

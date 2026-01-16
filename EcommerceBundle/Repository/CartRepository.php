@@ -2,29 +2,25 @@
 
 namespace MauticPlugin\EcommerceBundle\Repository;
 
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use MauticPlugin\EcommerceBundle\Entity\Cart;
 
-class CartRepository
+/**
+ * @extends ServiceEntityRepository<Cart>
+ */
+class CartRepository extends ServiceEntityRepository
 {
-    private EntityManagerInterface $em;
-
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(ManagerRegistry $registry)
     {
-        $this->em = $em;
-    }
-
-    public function find(int $id): ?Cart
-    {
-        return $this->em->getRepository(Cart::class)->find($id);
+        parent::__construct($registry, Cart::class);
     }
 
     public function getCartById(int $cartId, int $shopId): ?array
     {
-        $qb = $this->em->createQueryBuilder();
+        $qb = $this->createQueryBuilder('c');
 
         $qb->select('c.id, c.dateUpdPrestashop')
-            ->from(Cart::class, 'c')
             ->where('c.cartId = :cartId')
             ->andWhere('c.shopId = :shopId')
             ->setParameter('cartId', $cartId)

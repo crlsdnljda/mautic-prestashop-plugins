@@ -2,20 +2,17 @@
 
 namespace MauticPlugin\EcommerceBundle\Repository;
 
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use MauticPlugin\EcommerceBundle\Entity\OrderRow;
 
-class OrderRowRepository
+/**
+ * @extends ServiceEntityRepository<OrderRow>
+ */
+class OrderRowRepository extends ServiceEntityRepository
 {
-    private EntityManagerInterface $em;
-
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(ManagerRegistry $registry)
     {
-        $this->em = $em;
-    }
-
-    public function find(int $id): ?OrderRow
-    {
-        return $this->em->getRepository(OrderRow::class)->find($id);
+        parent::__construct($registry, OrderRow::class);
     }
 }

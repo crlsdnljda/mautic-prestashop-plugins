@@ -2,29 +2,25 @@
 
 namespace MauticPlugin\EcommerceBundle\Repository;
 
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use MauticPlugin\EcommerceBundle\Entity\Product;
 
-class ProductRepository
+/**
+ * @extends ServiceEntityRepository<Product>
+ */
+class ProductRepository extends ServiceEntityRepository
 {
-    private EntityManagerInterface $em;
-
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(ManagerRegistry $registry)
     {
-        $this->em = $em;
-    }
-
-    public function find(int $id): ?Product
-    {
-        return $this->em->getRepository(Product::class)->find($id);
+        parent::__construct($registry, Product::class);
     }
 
     public function getProductById(int $productId, int $shopId, int $productAttributeId, string $language): array
     {
-        $qb = $this->em->createQueryBuilder();
+        $qb = $this->createQueryBuilder('p');
 
         $qb->select('p.id')
-            ->from(Product::class, 'p')
             ->where('p.productId = :productId')
             ->andWhere('p.shopId = :shopId')
             ->andWhere('p.productAttributeId = :productAttributeId')
@@ -35,5 +31,22 @@ class ProductRepository
             ->setParameter('language', $language);
 
         return $qb->getQuery()->getArrayResult();
+    }
+
+    public function getProducts(array $args = []): array
+    {
+        $qb = $this->createQueryBuilder('p');
+
+        if (isset($args['shopId'])) {
+            $qb->andWhere('p.shopId = :shopId')
+               ->setParameter('shopId', $args['shopId']);
+        }
+
+        if (isset($args['language'])) {
+            $qb->andWhere('p.language = :language')
+               ->setParameter('language', $args['language']);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }
